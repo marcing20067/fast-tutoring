@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Spring Boot Thymeleaf Form Example</title>
+</head>
+<body>
+<form method="post" action="/auth/login">
+    <h2>Please sign in</h2>
+    <p>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+    </p>
+    <button type="submit">Sign in</button>
+</form>
+</body>
+</html>
