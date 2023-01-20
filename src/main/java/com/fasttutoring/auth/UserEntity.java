@@ -1,9 +1,9 @@
 package com.fasttutoring.auth;
 
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -17,7 +17,6 @@ public class UserEntity {
     @Column(unique = true)
     private String email;
     @NotNull
-    @Size(min = 8)
     private String password;
 
     @NotNull
@@ -36,10 +35,6 @@ public class UserEntity {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getEmail() {

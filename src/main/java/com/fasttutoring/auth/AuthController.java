@@ -24,13 +24,11 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseBody
-    ResponseEntity<UserEntity> postRegister(@RequestBody UserEntity user) {
-        UserEntity createdUser = this.authService.register(user.getEmail(), user.getPassword());
-        URI savedUserUri = this.authService.getUserUri(user);
-        return ResponseEntity.created(savedUserUri).body(createdUser);
-
+    ResponseEntity<UserEntity> postRegister(@RequestBody UserDTO user) {
+        UserEntity createdUser = this.authService.register(user);
+        URI savedUserUri = this.authService.getUserUri(createdUser);
+        return ResponseEntity.created(savedUserUri).build();
     }
-
 
     @GetMapping("/login")
     String getLogin() {

@@ -1,6 +1,6 @@
 package com.fasttutoring.auth;
 
-import org.springframework.security.core.userdetails.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,31 +13,33 @@ import java.util.*;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String appUrl;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, @Value("${app.url}") String appUrl) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.appUrl = appUrl;
     }
 
     @Transactional
-    UserEntity register(String email, String password) {
-        List<String> userRoles = new LinkedList<String>();
-        userRoles.add("Role");
-        String hashedPassword = passwordEncoder.encode(password);
+    UserEntity register(UserDTO dto) {
+        List<String> newUserRoles = new LinkedList<String>();
+        newUserRoles.add("Role");
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
 
         UserEntity user = new UserEntity();
 
-        user.setEmail(email);
+        user.setEmail(dto.getEmail());
         user.setPassword(hashedPassword);
-        user.setRoles(userRoles);
+        user.setRoles(newUserRoles);
 
         UserEntity createdUser = userRepository.save(user);
         return createdUser;
     }
 
     URI getUserUri(UserEntity user) {
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/:id")
+        URI uri = ServletUriComponentsBuilder.fromUriString(appUrl)
+                .path("/{id}")
                 .buildAndExpand(user.getId())
                 .toUri();
         return uri;
