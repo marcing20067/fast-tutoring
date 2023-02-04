@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Websocket Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+</head>
+<body>
+<input type="text" name="value" required>
+<button>Send</button>
+
+<p>Results: <span></span></p>
+<script defer>
+    const button = document.querySelector("button");
+    const input = document.querySelector("input")
+    const resultsOutput = document.querySelector("span");
+    const mockId = new Date().getTime().toString().slice(-3);
+    const socket = new SockJS('/connect');
+
+    let text = "";
+    let stompClient = null;
+
+    function setText(value) {
+        text = value;
+        resultsOutput.textContent = value;
+    }
+
+    function addToText(value) {
+        const updatedText = resultsOutput.textContent + value;
+        setText(updatedText)
+    }
+
+    function onJoinLesson(results) {
+        setText(results.body)
+
+        stompClient.subscribe(`/lesson/board-changes/${mockId}`, (results) => {
+            addToText(results.body);
+        });
+
+        button.addEventListener("click", () => {
+            addToText(input.value);
+            stompClient.send(`/app/draw/${mockId}`, {}, input.value);
+        })
+    }
+
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+        stompClient.subscribe(`/lesson/join/${mockId}`, onJoinLesson)
+        stompClient.send(`/app/join/${mockId}`, {});
+    });
+</script>
+</body>
+</html>

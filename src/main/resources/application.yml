@@ -1,6 +1,11 @@
 spring:
   datasource:
     url: jdbc:h2:mem:test
+    username: xd
+    password: xd
+  h2:
+    console:
+      enabled: true
   liquibase:
     enabled: false
 app:
